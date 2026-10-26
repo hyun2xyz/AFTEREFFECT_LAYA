@@ -30,6 +30,7 @@ class TerminalInstallTests(unittest.TestCase):
                 "raise SystemExit(7 if '--fail' in sys.argv[1:] else 0)\n", encoding="utf-8")
         shutil.copy2(SCRIPTS/"laya_dispatch.py", self.scripts/"laya_dispatch.py")
         shutil.copy2(SCRIPTS/"cli_output.py", self.scripts/"cli_output.py")
+        shutil.copy2(SCRIPTS/"ae_phrases.py", self.scripts/"ae_phrases.py")
         self.bin = self.root/"bin with spaces"
         self.config = self.root/"config with spaces"
         self.backups = self.root/"backups"

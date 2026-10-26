@@ -15,6 +15,7 @@ import uuid
 sys.dont_write_bytecode = True
 import ae_basic as core
 from cli_output import configure_stdout
+from ae_phrases import strip_app_prefix
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,7 +48,7 @@ def unquote(value):
 
 
 def parse_request(request):
-    s = request.strip()
+    s = strip_app_prefix(request)
     if not s or len(s) > 600:
         raise ValueError("Use one short supported command (up to 600 characters)")
     if s in {"명령어", "명령어 목록", "도움말", "help"}:
@@ -56,10 +57,10 @@ def parse_request(request):
         return {"kind": "inspect", "actions": []}
     # The whole command must match; negations, questions and quoted instructions
     # are never converted into executable operations by a substring search.
-    m = re.fullmatch(r"컴포지션\s+(?:(\d{2,5})\s*[xX×*]\s*(\d{2,5})|(\d{4})(\d{4}))(?:\s+(\d+(?:\.\d+)?)fps)?(?:\s+(\d+(?:\.\d+)?)초)?\s+(?:만들어줘|생성해줘)", s)
+    m = re.fullmatch(r"(?:컴포지션|컴프|comp|composition)\s*(?:(?P<w>\d{2,5})(?:\s*[x×*]\s*|\s+)(?P<h>\d{2,5})|(?P<packed>\d{8}))(?:\s+(?P<fps>\d+(?:\.\d+)?)fps)?(?:\s+(?P<seconds>\d+(?:\.\d+)?)초)?(?:\s+(?:만들어줘|생성해줘|create))?", s, re.IGNORECASE)
     if m:
-        width,height = (m[1],m[2]) if m[1] else (m[3],m[4])
-        return {"kind":"mutate", "actions":[{"op":"create_comp","name":"Laya AE","width":int(width),"height":int(height),"fps":float(m[5] or 30),"duration":float(m[6] or 10)}]}
+        width,height = (m["w"],m["h"]) if m["w"] else (m["packed"][:4],m["packed"][4:])
+        return {"kind":"mutate", "actions":[{"op":"create_comp","name":"Laya AE","width":int(width),"height":int(height),"fps":float(m["fps"] or 30),"duration":float(m["seconds"] or 10)}]}
     m = re.fullmatch(r"배경\s*색\s+(초록색?|빨강색?|파랑색?|검정색?|흰색|노랑색?|#[0-9a-fA-F]{6})(?:으로|로)?\s+(?:바꿔줘|변경해줘)", s)
     if m:
         value=m[1]

@@ -181,7 +181,7 @@ class SetupTests(unittest.TestCase):
     def test_no_git_source_copy_runs_without_site_and_with_legacy_stdout_codec(self):
         scripts = self.root/"scripts"
         scripts.mkdir()
-        for name in ("setup_environment.py", "cli_output.py", "terminal.py", "ae_basic.py"):
+        for name in ("setup_environment.py", "cli_output.py", "terminal.py", "ae_basic.py", "ae_phrases.py"):
             shutil.copy2(SCRIPTS/name, scripts/name)
         environment = os.environ.copy()
         environment["PYTHONIOENCODING"] = "cp1252"

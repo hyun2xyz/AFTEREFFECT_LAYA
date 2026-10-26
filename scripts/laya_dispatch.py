@@ -7,11 +7,10 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-import unicodedata
 from cli_output import configure_stdout
+from ae_phrases import looks_like_ae
 
 SCHEMA = "ae-basic-laya.dispatch.v1"
-AE_PREFIXES = ("컴포지션", "배경", "텍스트", "널", "3D 널", "선택 레이어", "현재 상태")
 
 
 def read_config(path):
@@ -29,11 +28,11 @@ def read_config(path):
 
 def command(config, arguments):
     arguments = list(arguments)
-    if arguments and arguments[0] == "ae":
+    if arguments and arguments[0].casefold() == "ae":
         return [*config["ae_argv"], *arguments[1:]]
-    text = unicodedata.normalize("NFC", " ".join(" ".join(arguments).split()))
-    if any(text.startswith(prefix) for prefix in AE_PREFIXES):
-        return [*config["ae_argv"], *arguments]
+    scoped = arguments[1:] if arguments[:1] == ["run"] else arguments
+    if looks_like_ae(" ".join(scoped)):
+        return [*config["ae_argv"], *scoped]
     return [*config["legacy_argv"], *arguments]
 
 
