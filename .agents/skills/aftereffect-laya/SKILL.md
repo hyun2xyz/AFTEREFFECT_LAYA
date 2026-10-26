@@ -6,7 +6,7 @@ description: Start a clean Mac/Windows classroom computer and teach basic AE com
 # Aftereffect Laya classroom starter
 
 This is a repository-bound skill. Locate the root containing `scripts/terminal.py`;
-all commands below run from that root. Keep the whole ZIP/repository together.
+all commands below run from that root. Keep the whole repository (the student's fork) together.
 Do not install the teacher's global harness or copy this SKILL.md alone.
 
 ## Start from the student's actual computer
@@ -35,7 +35,8 @@ Do not install the teacher's global harness or copy this SKILL.md alone.
 - Read short result summaries, not complete snapshots or keyframe arrays. Use
   Python to select/check large data. `prepared` and process exit0 are not native proof.
 - Native transport is AE's DoScriptFile Apple event on Mac / AfterFX.exe -r on
-  Windows. If unavailable, hand the generated JSX to the student for AE's
+  Windows. Agent sandboxes block both: run native calls outside the sandbox with
+  the student's approval as `AGENTS.md` describes. If still unavailable, hand the generated JSX to the student for AE's
   File > Scripts > Run Script File and wait for a real receipt before claiming success.
 - Native snapshot/session IDs and receipts prevent stale/duplicate operations.
   If partial/unknown/timed out, preserve logs and inspect before choosing another job.

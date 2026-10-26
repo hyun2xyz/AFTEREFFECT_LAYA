@@ -1,9 +1,9 @@
 # Windows에서 처음 준비하기
 
-[START-HERE](../START-HERE.md)대로 ZIP을 완전히 풀고 저장소 폴더를 에이전트와
+[START-HERE](../START-HERE.md)대로 포크해서 받은 저장소 폴더를 에이전트와
 **Windows PowerShell**의 작업 폴더로 선택합니다. 로컬 AE 조작에는 Windows Python을
 사용합니다. WSL/Linux나 원격 서버에서 학생의 AE를 조작하는 과정이 아닙니다.
-기본 과정에는 Git·MCP·COLMAP·FFmpeg·모델·추가 pip 패키지가 필요하지 않습니다.
+기본 과정에는 MCP·COLMAP·FFmpeg·모델·추가 pip 패키지가 필요하지 않습니다.
 
 ## 1. Python 3.13 x64 준비
 
@@ -68,6 +68,11 @@ AE가 없어도 이 단계와 미리보기는 가능합니다. 기존 가상환�
 이 starter는 네트워크 통신에 이 권한을 사용하지 않습니다.
 [Adobe 스크립트 설정](https://helpx.adobe.com/after-effects/desktop/automate-in-after-effects/automate-animation/scripts.html).
 helper가 AE 설정이나 Windows 보안 설정을 바꾸지는 않습니다.
+
+Codex처럼 샌드박스 안에서 명령을 실행하는 에이전트에서는 `AfterFX.exe -r` 호출이 막힙니다.
+AE를 실제로 조작하는 명령은 에이전트가 승인을 요청해 **샌드박스 밖에서** 실행하고, 학생은 어떤
+문장을 보내는 명령인지 확인한 뒤 승인합니다. 보안 설정 자체를 끄지 않습니다. 승인 전에 막혀
+실패한 명령은 AE에 닿지 않았으므로 승인 후 같은 문장으로 한 번 다시 실행하면 됩니다.
 
 ```powershell
 & .\.venv\Scripts\python.exe -B scripts\terminal.py --out-root "$PWD\work\lesson01" '현재 상태 보여줘'

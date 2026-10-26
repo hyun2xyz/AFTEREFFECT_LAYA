@@ -3,9 +3,9 @@
 **빈 Mac·Windows에서 설치 안내부터 첫 After Effects 명령까지.**
 Codex·Claude Code와 함께 작은 스크립트를 읽고 바꾸며 배우는 수업용 출발점입니다.
 
-[소스 ZIP 받기](https://github.com/hyun2xyz/AFTEREFFECT_LAYA/archive/refs/heads/main.zip)
-→ 압축 해제 → 로컬 Codex에서 폴더 열기 → **[START-HERE.md](START-HERE.md)**.
-Git과 전역 스킬 설치는 필요하지 않습니다.
+공통강의의 Git 세팅을 마친 뒤 이 저장소를 내 GitHub 계정에 **포크**해서 받고
+→ 받은 폴더를 로컬 Codex에서 열기 → **[START-HERE.md](START-HERE.md)**.
+전역 스킬 설치는 필요하지 않습니다. 내 작업은 내 포크에 push하고 강사 업데이트는 pull로 받습니다.
 
 첫 실습은 **Python3.13(또는3.12) + 정식 AE24 이상**만 준비합니다.
 기본 조작은 Python 표준 라이브러리와 고정 JSX로 실행하며, pip 패키지·모델 가중치·
@@ -26,6 +26,7 @@ Windows에서는 `.\.venv\Scripts\python.exe`로 같은 스크립트를 실행�
 
 | 순서 | 지금 읽을 문서 |
 | --- | --- |
+| 0. 포크해서 받기·업데이트 | [fork-and-update](docs/fork-and-update.md) |
 | 1. 설치·시작 문장 | [START-HERE](START-HERE.md) |
 | 2. 현재 OS 준비 | [Mac](docs/setup-macos.md) · [Windows](docs/setup-windows.md) |
 | 3. 첫 컴프와 초록 배경 | [첫 수업](docs/first-lesson.md) |

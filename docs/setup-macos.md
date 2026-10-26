@@ -1,8 +1,8 @@
 # Mac에서 처음 준비하기
 
-[START-HERE](../START-HERE.md)대로 ZIP을 완전히 풀고 저장소 폴더를 Codex/Claude Code에
+[START-HERE](../START-HERE.md)대로 포크해서 받은 저장소 폴더를 Codex/Claude Code에
 엽니다. 모든 명령은 그 폴더에서 실행합니다. 기본 과정은 Python 표준 라이브러리만 쓰며
-Git·MCP·COLMAP·FFmpeg·모델 가중치가 필요하지 않습니다.
+MCP·COLMAP·FFmpeg·모델 가중치가 필요하지 않습니다.
 
 ## 1. Python 3.13 준비
 
@@ -18,9 +18,9 @@ python3.13 --version
 ```
 
 명령이 없으면 설치한 실행 파일의 실제 경로를 사용합니다. python.org 기본 설치의 예는
-`/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13`입니다. 이미 Homebrew를
-사용 중이라면 [python@3.13](https://formulae.brew.sh/formula/python@3.13) 설치를 선택할 수
-있습니다. 이 수업을 위해 Homebrew부터 설치할 필요는 없습니다.
+`/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13`입니다. 공통강의에서
+Homebrew를 설치했다면 [python@3.13](https://formulae.brew.sh/formula/python@3.13) 설치를 선택할 수
+있습니다. 이 수업을 위해 Homebrew를 따로 설치할 필요는 없습니다.
 
 ## 2. 이 폴더의 가상환경
 
@@ -72,6 +72,11 @@ AE가 없어도 준비할 수 있습니다. 기존 환경이 손상되었거나 
 승인합니다. 위치는 **시스템 설정 → 개인정보 보호 및 보안 → 자동화**입니다.
 [Apple 자동화 권한](https://support.apple.com/en-au/guide/mac-help/mchl07817563/mac).
 helper가 이 권한들을 바꾸지는 않습니다.
+
+Codex처럼 샌드박스 안에서 명령을 실행하는 에이전트에서는 AE로 보내는 Apple 이벤트가 막힙니다.
+AE를 실제로 조작하는 명령은 에이전트가 승인을 요청해 **샌드박스 밖에서** 실행하고, 학생은 어떤
+문장을 보내는 명령인지 확인한 뒤 승인합니다. 보안 설정 자체를 끄지 않습니다. 승인 전에 막혀
+실패한 명령은 AE에 닿지 않았으므로 승인 후 같은 문장으로 한 번 다시 실행하면 됩니다.
 
 ```sh
 .venv/bin/python -B scripts/terminal.py --out-root "$PWD/work/lesson01" '현재 상태 보여줘'

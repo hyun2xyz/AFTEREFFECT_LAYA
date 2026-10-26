@@ -1,14 +1,14 @@
 # 처음 시작하기
 
 이 저장소는 **AE 기본 조작을 직접 확장하며 배우는 최소 출발점**입니다.
-Python·AE·Laya가 없는 컴퓨터도 설치 단계부터 안내합니다. 앱·계정·가중치는 ZIP에
+Python·AE·Laya가 없는 컴퓨터도 설치 단계부터 안내합니다. 앱·계정·가중치는 저장소에
 포함하지 않으며 Adobe 라이선스는 학생이 준비합니다.
 
-## 1. ZIP과 로컬 에이전트
+## 1. 포크와 로컬 에이전트
 
-[GitHub 소스 ZIP](https://github.com/hyun2xyz/AFTEREFFECT_LAYA/archive/refs/heads/main.zip)을
-완전히 풀어 `AGENTS.md`, `scripts`, `docs`, `.agents`가 있는 폴더를 엽니다.
-Git을 설치하거나 저장소를 clone할 필요는 없습니다. 압축 폴더 안에서 실행하지 않습니다.
+공통강의의 Git 세팅(Git·GitHub CLI 설치와 `gh` 인증)을 마친 컴퓨터에서 시작합니다.
+[포크로 시작하고 업데이트 받기](docs/fork-and-update.md) 1번의 문장으로 이 저장소를 내 GitHub
+계정에 포크해서 받고, 받은 폴더를 에이전트에서 다시 엽니다.
 
 Codex가 처음이면 [OpenAI 공식 빠른 시작](https://developers.openai.com/codex/quickstart)을
 따라 현재 OS의 데스크톱 앱을 설치하고 로그인한 뒤, **Codex에서 이 로컬 폴더**를 엽니다.
@@ -21,6 +21,8 @@ Claude Code 등 이미 사용하는 로컬 에이전트도 됩니다. 클라우�
 > 실제 OS와 Python/After Effects 설치 상태부터 확인하고, 해당 OS setup 문서의 공식
 > 출처로 빠진 것만 준비해 주세요. Python3.13 또는3.12와 이 폴더의 .venv를 사용해 주세요.
 > Adobe·에이전트 로그인, 결제, 약관 동의는 제가 직접 하겠습니다.
+> AE를 실제로 조작하는 명령은 처음부터 승인을 요청해 샌드박스 밖에서 실행해 주세요.
+> 보안 설정 자체는 바꾸지 마세요.
 > 먼저 --dry-run, 이어서 native 상태 확인까지 하고 첫 수업의 새1920×1090컴프와
 > 초록 배경색만 실행해 주세요. 기존 프로젝트는 저장·닫기·교체하지 마세요.
 > 기본 실습에는 Laya 모델/MCP/서버/전역 스킬을 설치하지 마세요. 터미널 launcher가
@@ -40,3 +42,6 @@ Claude Code 등 이미 사용하는 로컬 에이전트도 됩니다. 클라우�
 
 기본 명령은 고정 문형만 지원합니다. 해석되지 않는 문장을 추측해서 실행하지 않습니다.
 Laya가 필요한 반복 분류를 배우고 싶을 때만 [선택 설치](docs/laya.md)를 읽습니다.
+
+수업을 마치면 내 작업을 내 포크에 push하고, 강사가 업데이트를 알리면 upstream에서 pull합니다.
+방법은 [포크로 시작하고 업데이트 받기](docs/fork-and-update.md)의 2·3번에 있습니다.
