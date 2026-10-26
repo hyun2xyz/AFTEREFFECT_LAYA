@@ -1,0 +1,22 @@
+name: Classroom starter checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+        python: ['3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Stdlib regression checks
+        run: python -B -m unittest discover -s tests -v
+      - name: Source ZIP style setup and local launcher
+        run: python -B tests/smoke_starter.py --out work/ci-smoke

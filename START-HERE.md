@@ -1,0 +1,42 @@
+# 처음 시작하기
+
+이 저장소는 **AE 기본 조작을 직접 확장하며 배우는 최소 출발점**입니다.
+Python·AE·Laya가 없는 컴퓨터도 설치 단계부터 안내합니다. 앱·계정·가중치는 ZIP에
+포함하지 않으며 Adobe 라이선스는 학생이 준비합니다.
+
+## 1. ZIP과 로컬 에이전트
+
+[GitHub 소스 ZIP](https://github.com/hyun2xyz/AFTEREFFECT_LAYA/archive/refs/heads/main.zip)을
+완전히 풀어 `AGENTS.md`, `scripts`, `docs`, `.agents`가 있는 폴더를 엽니다.
+Git을 설치하거나 저장소를 clone할 필요는 없습니다. 압축 폴더 안에서 실행하지 않습니다.
+
+Codex가 처음이면 [OpenAI 공식 빠른 시작](https://developers.openai.com/codex/quickstart)을
+따라 현재 OS의 데스크톱 앱을 설치하고 로그인한 뒤, **Codex에서 이 로컬 폴더**를 엽니다.
+Claude Code 등 이미 사용하는 로컬 에이전트도 됩니다. 클라우드 전용 작업 폴더는
+학생 컴퓨터의 AE와 연결되어 있다고 가정하지 않습니다.
+
+## 2. 이 문장을 붙여 넣기
+
+> 이 폴더의 AGENTS.md와 .agents/skills/aftereffect-laya/SKILL.md를 읽고 시작해 주세요.
+> 실제 OS와 Python/After Effects 설치 상태부터 확인하고, 해당 OS setup 문서의 공식
+> 출처로 빠진 것만 준비해 주세요. Python3.13 또는3.12와 이 폴더의 .venv를 사용해 주세요.
+> Adobe·에이전트 로그인, 결제, 약관 동의는 제가 직접 하겠습니다.
+> 먼저 --dry-run, 이어서 native 상태 확인까지 하고 첫 수업의 새1920×1090컴프와
+> 초록 배경색만 실행해 주세요. 기존 프로젝트는 저장·닫기·교체하지 마세요.
+> 기본 실습에는 Laya 모델/MCP/서버/전역 스킬을 설치하지 마세요. 터미널 launcher가
+> 필요하면 이 저장소의 백업·복원 가능한 설치기만 사용하고 기존 명령은 보존해 주세요.
+> 설치 완료·명령 준비·실제 AE 결과 확인을 구분해 알려 주고, 다음 기능은 하나씩 배우겠습니다.
+
+## 3. 준비에서 첫 결과까지
+
+1. [Mac setup](docs/setup-macos.md) 또는 [Windows setup](docs/setup-windows.md) 중 하나만
+   읽습니다. Python이 없으면 Python 명령부터 실행하지 말고 공식 설치기부터 준비합니다.
+2. `setup_environment.py`로 프로젝트 `.venv`와 AE 경로를 확인합니다. 기본 실습에는
+   pip 설치와 학습 가중치가 없습니다. Homebrew도 필수가 아닙니다.
+3. [첫 수업](docs/first-lesson.md)대로 명령 미리보기 → AE 상태 읽기 → 새컴프 → 초록
+   배경색을 확인합니다. `prepared`나 앱 탐지만으로 완료라고 하지 않습니다.
+4. 결과가 맞으면 학생이 다음으로 필요한 조작 하나를 정합니다. [명령어](docs/commands.md)의
+   전체 목록을 한 번에 실행하지 않습니다. 짧은 기록은 로컬 `work/lesson01/next.md`에 남깁니다.
+
+기본 명령은 고정 문형만 지원합니다. 해석되지 않는 문장을 추측해서 실행하지 않습니다.
+Laya가 필요한 반복 분류를 배우고 싶을 때만 [선택 설치](docs/laya.md)를 읽습니다.

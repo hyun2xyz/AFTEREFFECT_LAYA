@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aftereffect Laya · 첫 수업"
+  short_description: "빈 Mac과 Windows에서 설치부터 AE 기본 명령까지 배우는 출발점"
+  default_prompt: "$aftereffect-laya로 이 컴퓨터의 설치 상태를 확인하고 첫 AE 실습을 한 단계씩 진행해 주세요."
