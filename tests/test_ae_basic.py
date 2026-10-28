@@ -112,7 +112,7 @@ class BasicTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             job={"schema":core.VERSION,"job_id":"j","inspect_only":True,"actions":[],"data":'"; throw Error("bad"); //\u2028한글'}
             result=core.emit(job,Path(temp)/"job with spaces")
-            code=Path(result["jsx"]).read_text()
+            code=Path(result["jsx"]).read_text(encoding="utf-8")
             encoded=code.split("var job = ",1)[1]
             decoded,_=json.JSONDecoder().raw_decode(encoded)
             self.assertEqual(decoded,job)
@@ -123,7 +123,7 @@ class BasicTests(unittest.TestCase):
 
     def test_duplicate_job_is_refused_before_transport(self):
         with tempfile.TemporaryDirectory() as temp:
-            directory=Path(temp);(directory/"result.json").write_text("{}")
+            directory=Path(temp);(directory/"result.json").write_text("{}", encoding="utf-8")
             with patch.object(terminal.subprocess,"run",side_effect=AssertionError("resent")),self.assertRaises(ValueError):
                 terminal.execute_job({"jsx":str(directory/"run.jsx"),"result":str(directory/"result.json")},Path("AE"))
 
@@ -132,7 +132,7 @@ class BasicTests(unittest.TestCase):
             job={"schema":core.VERSION,"job_id":"j","inspect_only":True,"actions":[]}
             prepared=core.emit(job,Path(temp)/"job")
             def fake_run(argv,**kwargs):
-                Path(prepared["result"]).write_text(json.dumps(receipt()))
+                Path(prepared["result"]).write_text(json.dumps(receipt()), encoding="utf-8")
                 return subprocess_result()
             with patch.object(terminal.sys,"platform","win32"),patch.object(terminal.subprocess,"run",side_effect=fake_run) as run:
                 self.assertEqual(terminal.execute_job(prepared,Path("C:/Adobe/AfterFX.exe"))["status"],"ok")

@@ -25,7 +25,7 @@ class LayaRouteTest(unittest.TestCase):
             for name in laya_route.REQUIRED_MODEL_FILES[:-1]:
                 target = path / name
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_text("x")
+                target.write_text("x", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "tokenizer"):
                 laya_route._model_path(path)
 
