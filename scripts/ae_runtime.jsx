@@ -86,9 +86,15 @@
             if(a.ref)refs[a.ref]=c;r.comp_id=c.id;r.name=c.name;r.width=c.width;r.height=c.height;r.fps=c.frameRate;r.duration=c.duration;
         } else if(a.op==="set_comp") {
             c=comp(a.comp);c.bgColor=a.changes.background_color;r.comp_id=c.id;r.background_color=c.bgColor;
-        } else if(a.op==="add_null" || a.op==="add_text") {
+        } else if(a.op==="add_null" || a.op==="add_text" || a.op==="add_solid") {
             c=comp(a.comp);
             if(a.op==="add_null") {l=c.layers.addNull();l.threeDLayer=!!a.three_d;}
+            else if(a.op==="add_solid") {
+                if(c.width!==a.width || c.height!==a.height || Math.abs(c.duration-a.duration)>0.0001)
+                    throw Error("Composition dimensions or duration changed");
+                l=c.layers.addSolid(a.color,a.name,a.width,a.height,c.pixelAspect,a.duration);
+                l.startTime=0;l.inPoint=0;l.outPoint=c.duration;
+            }
             else {
                 l=c.layers.addText(a.text);
                 p=l.property("ADBE Text Properties").property("ADBE Text Document");var d=p.value;
@@ -98,6 +104,7 @@
             }
             l.name=a.name;if(a.ref)refs[a.ref]=l;r.comp_id=c.id;r.layer_id=l.id;r.name=l.name;r.three_d=l.threeDLayer;
             if(a.op==="add_text"){var td=l.property("ADBE Text Properties").property("ADBE Text Document").value;r.text=td.text;r.font_size=td.fontSize;r.color=td.fillColor;}
+            if(a.op==="add_solid"){r.color=l.source.mainSource.color;r.width=l.source.width;r.height=l.source.height;r.duration=l.outPoint-l.inPoint;}
         } else {
             c=comp(a.comp);l=layer(c,a.layer);r.comp_id=c.id;r.layer_id=l.id;
             if(a.op==="set_layer") {

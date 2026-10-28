@@ -20,10 +20,20 @@ from ae_phrases import strip_app_prefix
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 COLORS = {"초록": [0,1,0], "빨강": [1,0,0], "파랑": [0,0,1], "검정": [0,0,0], "흰": [1,1,1], "노랑": [1,1,0]}
+COLOR_NAMES = {
+    "초록": "초록", "초록색": "초록", "녹색": "초록",
+    "빨강": "빨강", "빨강색": "빨강", "빨간색": "빨강",
+    "파랑": "파랑", "파랑색": "파랑", "파란색": "파랑",
+    "검정": "검정", "검정색": "검정", "검은색": "검정",
+    "흰색": "흰", "하얀색": "흰",
+    "노랑": "노랑", "노랑색": "노랑", "노란색": "노랑",
+}
+COLOR_PATTERN = "|".join(re.escape(name) for name in COLOR_NAMES)
 EXAMPLES = [
     "컴포지션 1920x1090 만들어줘", "컴포지션 1920x1080 24fps 5초 만들어줘",
-    "배경 색 초록색으로 바꿔줘", "배경색 #224466으로 바꿔줘",
+    "배경색 초록색으로 만들어줘", "배경색 빨간색으로 바꿔줘", "배경색 #224466으로 바꿔줘",
     "텍스트 안녕하세요 추가해줘", "널 추가해줘", "3D 널 추가해줘",
+    "솔리드 하나 만들어줘", "솔리드 빨간색으로 만들어줘",
     "선택 레이어 이름 타이틀로 바꿔줘", "선택 레이어 위치 960 540으로 바꿔줘",
     "선택 레이어 크기 50 50으로 바꿔줘", "선택 레이어 회전 45도로 바꿔줘",
     "선택 레이어 불투명도 50으로 바꿔줘", "선택 레이어 숨겨줘", "선택 레이어 켜줘",
@@ -61,10 +71,10 @@ def parse_request(request):
     if m:
         width,height = (m["w"],m["h"]) if m["w"] else (m["packed"][:4],m["packed"][4:])
         return {"kind":"mutate", "actions":[{"op":"create_comp","name":"Laya AE","width":int(width),"height":int(height),"fps":float(m["fps"] or 30),"duration":float(m["seconds"] or 10)}]}
-    m = re.fullmatch(r"배경\s*색\s+(초록색?|빨강색?|파랑색?|검정색?|흰색|노랑색?|#[0-9a-fA-F]{6})(?:으로|로)?\s+(?:바꿔줘|변경해줘)", s)
+    m = re.fullmatch(rf"배경\s*색\s*({COLOR_PATTERN}|#[0-9a-fA-F]{{6}})(?:으로|로)?\s*(?:바꿔줘|변경해줘|만들어줘)", s)
     if m:
         value=m[1]
-        color=[int(value[i:i+2],16)/255 for i in (1,3,5)] if value.startswith("#") else COLORS[value.removesuffix("색")]
+        color=[int(value[i:i+2],16)/255 for i in (1,3,5)] if value.startswith("#") else COLORS[COLOR_NAMES[value]]
         return {"kind":"mutate","actions":[{"op":"set_comp","comp":"$active","changes":{"background_color":color}}]}
     m = re.fullmatch(r"텍스트\s+(.+?)\s+(?:추가해줘|만들어줘)", s)
     if m:
@@ -73,6 +83,10 @@ def parse_request(request):
     m = re.fullmatch(r"(3[Dd]\s+)?널\s+(?:추가해줘|만들어줘)", s)
     if m:
         return {"kind":"mutate","actions":[{"op":"add_null","comp":"$active","name":"Laya Null","three_d":bool(m[1])}]}
+    m = re.fullmatch(rf"솔리드\s*(?:(?:하나|한\s*개)\s*)?(?:({COLOR_PATTERN})(?:으로|로)?\s*)?(?:만들어줘|추가해줘)", s)
+    if m:
+        color=COLORS[COLOR_NAMES[m[1]]] if m[1] else [1,1,1]
+        return {"kind":"mutate","actions":[{"op":"add_solid","comp":"$active","name":"Laya Solid","color":color}]}
     m = re.fullmatch(r"선택 레이어 이름\s+(.+?)(?:으로|로)\s+바꿔줘", s)
     if m:
         return {"kind":"mutate","actions":[{"op":"set_layer","comp":"$active","layer":"$selected","changes":{"name":unquote(m[1])}}]}
@@ -99,7 +113,7 @@ def resolve_actions(parsed, snapshot):
     for action in actions:
         if action.get("comp")=="$active":
             if not active:
-                raise ValueError("Activate the intended composition first")
+                raise ValueError("활성 컴포지션이 없습니다. After Effects에서 작업할 컴포지션의 타임라인이나 화면을 클릭한 뒤 다시 실행하세요.")
             action["comp"]=active["id"]
         if action.get("layer")=="$selected":
             if len(selected)!=1:
@@ -198,7 +212,7 @@ def main(argv=None):
             value={"status":"commands","examples":EXAMPLES,"defaults":{"fps":30,"duration_seconds":10},"note":"Background color is a composition setting, not an opaque render background"}
         elif a.dry_run:
             # Validate all explicit numbers before even a read-only app query.
-            fake={"session":"preview","signature":"preview","project_items":0,"active_comp":{"id":1,"duration":10800},"layers":[{"id":1,"selected":True,"three_d":False}]}
+            fake={"session":"preview","signature":"preview","project_items":0,"active_comp":{"id":1,"width":1920,"height":1080,"duration":10800},"layers":[{"id":1,"selected":True,"three_d":False}]}
             if parsed["kind"]=="mutate":
                 try: resolve_actions(parsed,fake)
                 except ValueError as exc:

@@ -23,7 +23,7 @@ class PhraseTests(unittest.TestCase):
         config={"ae_argv":["python","ae.py"],"legacy_argv":["python","legacy.py"]}
         for args in [["comp","1920","1080"],["애프터이펙트","컴포지션","1920","1080"],
                      ["컴포지션","19201080"],["run","comp 1920 1080"],["애프터이펙트","지원하지않는기능"],
-                     ["레이어","정리하지마"]]:
+                     ["레이어","정리하지마"],["솔리드","하나","만들어줘"]]:
             with self.subTest(args=args):self.assertEqual(dispatch.command(config,args)[:2],config["ae_argv"])
         for args in [["status"],["apps"],["애프터이펙트","열어줘"],["애프터이펙트","종료해줘"],["run","메모 열어줘"]]:
             with self.subTest(args=args):self.assertEqual(dispatch.command(config,args),[*config["legacy_argv"],*args])

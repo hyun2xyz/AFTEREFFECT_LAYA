@@ -48,9 +48,14 @@ def main():
     assert install["status"]=="installed"
     launcher=bin_dir/("laya-ae.cmd" if os.name=="nt" else "laya-ae")
     listing=command([launcher,"--list"],source)
-    assert len(listing["examples"])==16
+    assert listing["status"]=="commands"
+    assert {"배경색 초록색으로 만들어줘", "배경색 빨간색으로 바꿔줘", "솔리드 하나 만들어줘"} <= set(listing["examples"])
     unicode_preview=command([launcher,"텍스트","안녕하세요","추가해줘","--dry-run"],source)
     assert unicode_preview["plan"]["actions"][0]["text"]=="안녕하세요"
+    color_preview=command([launcher,"배경색","빨간색으로","바꿔줘","--dry-run"],source)
+    assert color_preview["plan"]["actions"][0]["changes"]["background_color"]==[1,0,0]
+    solid_preview=command([launcher,"솔리드","하나","만들어줘","--dry-run"],source)
+    assert solid_preview["plan"]["actions"][0]["op"]=="add_solid"
     report={"source_zip_style":"passed","git_required":False,"pip_required":False,"model_required":False,
             "venv_isolated":True,"local_launcher_executed":True,"korean_args":"passed",
             "native_AE":"not_run","os_installers":"not_run","python":sys.version.split()[0]}

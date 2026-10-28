@@ -19,6 +19,7 @@ CATALOG = {
     "set_comp": "comp,changes={background_color:[r,g,b]}; changes the composition background, not an opaque layer.",
     "add_null": "comp,name; optional ref,three_d. Adds a null to the target composition.",
     "add_text": "comp,name,text; optional ref,font_size,color. Adds a text layer.",
+    "add_solid": "comp,name,color; optional ref. Adds a full-composition solid layer.",
     "set_layer": "comp,layer; changes object with name and/or enabled.",
     "set_transform": "comp,layer; values object: position,anchor_point,scale,rotation,opacity.",
     "set_keyframes": "comp,layer,property,keys=[{time,value}]; optional interpolation linear|hold.",
@@ -129,6 +130,22 @@ def validate_plan(raw, snapshot):
             number(action["fps"], "fps", 1, 120)
             number(action["duration"], "duration", 1/120, 10800)
             add_ref(action, {"kind": "comp", **{k: action[k] for k in ("width", "height", "fps", "duration")}})
+        elif op == "add_solid":
+            exact(action, {"op", "comp", "name", "color"}, {"ref", "width", "height", "duration"})
+            info = comp_info(action["comp"])
+            text(action["name"], "name")
+            color = action["color"]
+            if not isinstance(color, list) or len(color) != 3:
+                raise ValueError("color needs three RGB channels in [0,1]")
+            for x in color:
+                number(x, "color", 0, 1)
+            for key in ("width", "height", "duration"):
+                value = number(info.get(key), key, 4 if key != "duration" else 1/120,
+                               16000 if key != "duration" else 10800, integer=key != "duration")
+                if key in action and not equal_value(value, action[key]):
+                    raise ValueError("Solid dimensions and duration must match the target composition")
+                action[key] = value
+            add_ref(action, {"kind": "layer", "comp": action["comp"], "three_d": False})
         elif op in {"add_null", "add_text"}:
             required = {"op", "comp", "name"} | ({"text"} if op == "add_text" else set())
             optional = {"ref", "three_d"} if op == "add_null" else {"ref", "font_size", "color"}
@@ -273,6 +290,11 @@ def verify_receipt(raw, job):
         if op == "create_comp":
             wanted = {k: expected[k] for k in ("name", "width", "height", "fps", "duration")}
             created_id = actual.get("comp_id")
+        elif op == "add_solid":
+            wanted = {k: expected[k] for k in ("name", "color", "width", "height", "duration")}
+            wanted["three_d"] = False
+            created_id = actual.get("layer_id")
+            number(created_id, "native created ID", 1, integer=True)
         elif op in {"add_null", "add_text"}:
             wanted = {"name": expected["name"], "three_d": expected.get("three_d", False)}
             if op == "add_text":

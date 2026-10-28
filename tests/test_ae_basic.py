@@ -33,9 +33,60 @@ class BasicTests(unittest.TestCase):
 
     def test_negation_quoted_instructions_and_unknown_are_not_commands(self):
         for request in ["배경 색 초록색으로 바꾸지 마", '"배경 색 초록색으로 바꿔줘"라는 말이 무슨 뜻이죠?',
+                        "배경색 초록색으로 만들지 마", '"배경색 빨간색으로 만들어줘" 설명해줘',
+                        "배경색빨간색으로바꿔줘; 삭제해줘",
+                        "솔리드 만들지 마", "솔리드 하나 만들어줘; 삭제해줘",
                         "컴포지션 19201090 만들어줘; 삭제해줘", "전체 프로젝트 저장해줘", "레이어를 알아서 정리해줘"]:
             with self.subTest(request=request), self.assertRaises(ValueError):
                 terminal.parse_request(request)
+
+    def test_background_color_accepts_reported_phrases_and_common_names(self):
+        cases = {
+            "배경색초록색으로만들어줘": [0,1,0],
+            "배경색 초록색으로 만들어줘": [0,1,0],
+            "배경 색 녹색으로 변경해줘": [0,1,0],
+            "배경색 빨간색으로 바꿔줘": [1,0,0],
+            "배경 색 빨강색으로 바꿔줘": [1,0,0],
+            "배경색 파란색으로 바꿔줘": [0,0,1],
+            "배경색 검은색으로 바꿔줘": [0,0,0],
+            "배경색 하얀색으로 바꿔줘": [1,1,1],
+            "배경색 노란색으로 바꿔줘": [1,1,0],
+            "배경색 #FF0000으로 바꿔줘": [1,0,0],
+        }
+        for request, color in cases.items():
+            with self.subTest(request=request):
+                parsed=terminal.parse_request(request)
+                actions=terminal.resolve_actions(parsed,snapshot())
+                self.assertEqual(actions,[{"op":"set_comp","comp":11,"changes":{"background_color":color}}])
+
+    def test_background_color_requires_an_active_composition(self):
+        state=snapshot();state["active_comp"]=None
+        with self.assertRaisesRegex(ValueError,"활성 컴포지션이 없습니다"):
+            terminal.resolve_actions(terminal.parse_request("배경색 빨간색으로 바꿔줘"),state)
+
+    def test_solid_uses_active_composition_size_duration_and_requested_color(self):
+        for request,color in [("솔리드 하나 만들어줘",[1,1,1]),
+                              ("솔리드한개추가해줘",[1,1,1]),
+                              ("솔리드 빨간색으로 만들어줘",[1,0,0])]:
+            with self.subTest(request=request):
+                actions=terminal.resolve_actions(terminal.parse_request(request),snapshot())
+                self.assertEqual(actions,[{"op":"add_solid","comp":11,"name":"Laya Solid","color":color,
+                                           "width":1920,"height":1090,"duration":5}])
+        state=snapshot();state["active_comp"]=None
+        with self.assertRaisesRegex(ValueError,"활성 컴포지션이 없습니다"):
+            terminal.resolve_actions(terminal.parse_request("솔리드 하나 만들어줘"),state)
+
+    def test_solid_readback_verifies_identity_color_size_and_duration(self):
+        action=terminal.resolve_actions(terminal.parse_request("솔리드 하나 만들어줘"),snapshot())[0]
+        job={"job_id":"j","actions":[action]}
+        result=receipt(actions=[{"op":"add_solid","comp_id":11,"layer_id":52,"name":"Laya Solid",
+                                 "color":[1,1,1],"width":1920,"height":1090,"duration":5,"three_d":False}])
+        self.assertTrue(core.verify_receipt(result,job))
+        for field,value in [("color",[0,0,0]),("width",100),("height",100),
+                            ("duration",1),("comp_id",99),("layer_id",0)]:
+            bad=copy.deepcopy(result);bad["actions"][0][field]=value
+            with self.subTest(field=field),self.assertRaises(ValueError):
+                core.verify_receipt(bad,job)
 
     def test_dry_run_never_calls_app_or_model(self):
         out=io.StringIO()
