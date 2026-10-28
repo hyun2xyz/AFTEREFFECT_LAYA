@@ -35,8 +35,10 @@
     function nativeValue(p,value,l) {var old=p.value;return !l.threeDLayer && value instanceof Array && value.length===2 && old instanceof Array && old.length===3 ? [value[0],value[1],old[2]] : value;}
     function session() {
         if(!app.project) throw Error("Open or create an AE project first");
-        var old=$.global.__aeBasicSessionV1;
-        if(!old || old.project !== app.project) {
+        var old=$.global.__aeBasicSessionV1, same=false;
+        // A project closed since the last call leaves an invalid DOM object; comparing it throws.
+        try {same=!!old && old.project === app.project;} catch(stale) {}
+        if(!same) {
             old={project:app.project, token:String(new Date().getTime())+"-"+String(Math.random())};
             $.global.__aeBasicSessionV1=old;
         }
